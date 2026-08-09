@@ -51,7 +51,7 @@ When you define a hash branch with `hash_branch`, the plugin automatically calls
 
 ```ruby
 # Views will automatically look into views/users/
-App.hash_branch("users") do |r|
+hash_branch("users") do |r|
   # Calls append_view_subdir("users")
   view("index") # renders views/users/index.erb
 end
@@ -61,7 +61,7 @@ end
 
 ```ruby
 # Views will automatically look into views/admin/users/
-App.hash_branch(:admin, "users") do |r|
+hash_branch(:admin, "users") do |r|
   # Calls append_view_subdir("admin/users")
   view("index") # renders views/admin/users/index.erb
 end
