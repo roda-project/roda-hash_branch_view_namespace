@@ -33,7 +33,7 @@ class Roda
           if block
             meth = meths[segment] = define_roda_method(meths[segment] || "_hash_branch_view_subdir_#{namespace}_#{segment}", 1, &convert_route_block(block))
             super do |*_|
-              append_view_subdir(namespace.to_s << "/" << segment)
+              append_view_subdir("#{namespace}/#{segment}")
               send(meth, @_request)
             end
           else
