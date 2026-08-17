@@ -26,7 +26,7 @@ RSpec.describe Roda::RodaPlugins::HashBranchViewNamespace do
         r.hash_branches
       end
 
-      a.hash_branch(+"", "foo") do
+      a.hash_branch("", "foo") do |r|
         set_view_subdir("custom")
       end
 
@@ -41,7 +41,7 @@ RSpec.describe Roda::RodaPlugins::HashBranchViewNamespace do
         end
       end
 
-      a.hash_branch(:admin, "users") do
+      a.hash_branch(:admin, "users") do |r|
         append_view_subdir("list")
       end
 
@@ -56,10 +56,10 @@ RSpec.describe Roda::RodaPlugins::HashBranchViewNamespace do
         r.hash_branches
       end
 
-      a.hash_branch(+"", "test") { "v1" }
+      a.hash_branch("", "test") { |r| "v1" }
       expect(Rack::MockRequest.new(a).get("/test").body).to eq("v1")
 
-      a.hash_branch(+"", "test") { "v2" }
+      a.hash_branch("", "test") { |r| "v2" }
       expect(Rack::MockRequest.new(a).get("/test").body).to eq("v2")
     end
 
@@ -68,10 +68,10 @@ RSpec.describe Roda::RodaPlugins::HashBranchViewNamespace do
         r.hash_branches
       end
 
-      a.hash_branch(+"", "test") { "hello" }
+      a.hash_branch("", "test") { |r| "hello" }
       expect(Rack::MockRequest.new(a).get("/test").body).to eq("hello")
 
-      a.hash_branch(+"", "test")
+      a.hash_branch("", "test")
       expect(a.opts[:hash_branch_view_subdir_methods][""]["test"]).to be_nil
       expect(Rack::MockRequest.new(a).get("/test").status).to eq(404)
     end
@@ -80,10 +80,10 @@ RSpec.describe Roda::RodaPlugins::HashBranchViewNamespace do
   describe "inheritance" do
     it "duplicates hash_branch_view_subdir_methods into subclass" do
       parent = app
-      parent.hash_branch("shared") { "parent route" }
+      parent.hash_branch("shared") { |r| "parent route" }
 
       subclass = Class.new(parent)
-      subclass.hash_branch("child_only") { "child route" }
+      subclass.hash_branch("child_only") { |r| "child route" }
 
       expect(parent.opts[:hash_branch_view_subdir_methods][""]).to have_key("shared")
       expect(parent.opts[:hash_branch_view_subdir_methods][""]).not_to have_key("child_only")
@@ -96,7 +96,7 @@ RSpec.describe Roda::RodaPlugins::HashBranchViewNamespace do
   describe "freezing" do
     it "freezes options and inner hashes when app is frozen" do
       a = app
-      a.hash_branch("foo") { "bar" }
+      a.hash_branch("foo") { |r| "bar" }
       a.freeze
 
       expect(a.opts[:hash_branch_view_subdir_methods]).to be_frozen
